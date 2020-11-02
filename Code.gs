@@ -27,16 +27,11 @@ function fetchMMR() {
             if(segment.metadata.name == "Ranked Duel 1v1") {
               Logger.log("Ones rank: " + segment.stats.rating.value); 
             }
-          }
-          
-          
-          if(segment.type == "playlist" && segment.attributes.season == season) {
+
             if(segment.metadata.name == "Ranked Doubles 2v2") {
               Logger.log("Twos rank: " + segment.stats.rating.value); 
             }
-          }
-          
-          if(segment.type == "playlist" && segment.attributes.season == season) {
+            
             if(segment.metadata.name == "Ranked Standard 3v3") {
               Logger.log("Threes rank: " + segment.stats.rating.value); 
             }
