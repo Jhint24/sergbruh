@@ -56,10 +56,7 @@ function getStats(platform, name) {
   
     var player_id;
     
-    // @todo make this work for platforms that aren't steam.
-    if(platform == "steam") {
-      player_id = player_data.data[0].platformUserIdentifier;
-    }
+    player_id = player_data.data[0].platformUserIdentifier;
   
     player = fetchStats(platform, player_id);
   
