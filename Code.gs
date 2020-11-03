@@ -7,6 +7,7 @@ function fetchMMR() {
     for (var i = 1; i < data.length; i++) {
         // @todo normalize these values so it can accept e.g "steam" "Steam" etc.
         var platform = data[i][0];
+        var search = data[i][1];
       
         Logger.log("Ones rank: " + getOnesRank(platform, search)); 
         Logger.log("Twos rank: " + getTwosRank(platform, search)); 
@@ -25,6 +26,28 @@ function getTwosRank(platform, name) {
 function getThreesRank(platform, name) {
   return getRank(platform, name, "Ranked Standard 3v3");
 }
+
+function doStuff() {
+   Logger.log(getPlayer("https://rocketleague.tracker.network/rocket-league/profile/xbl/Johne%20queso/overview")); 
+}
+
+// https://rocketleague.tracker.network/rocket-league/profile/steam/76561199066412369/overview
+function getPlatform(url) {  
+  return chunkTrackerUrl(url)[1];
+}
+
+function getPlayer(url) {  
+  return chunkTrackerUrl(url)[2];
+}
+
+function chunkTrackerUrl(url) {
+  url = url.replace("https://rocketleague.tracker.network/rocket-league/profile/", "");
+
+  chunks = url.match(/^([^\/]+)\/([^\/]+)/);
+  
+  return chunks;
+}
+
 
 function getRank(platform, name, rank) {
   var season = ROCKET_LEAGUE_SEASON;
@@ -51,14 +74,19 @@ function getStats(platform, name) {
   var key = platform + "/" + name;
   var player = JSON.parse(cache.get(key));
   
-  if(player == null) { 
-    Logger.log(name);
-    
-    var player_data = fetchPlayer(platform, name);
   
+  if(player == null) {  
     var player_id;
     
-    player_id = player_data.data[0].platformUserIdentifier;
+    if(platform != "steam") {
+      Logger.log(platform, name);
+      
+      var player_data = fetchPlayer(platform, name);
+      
+      player_id = player_data.data[0].platformUserIdentifier;
+    } else {
+      player_id = name;
+    }
     
     player = fetchStats(platform, player_id);
   
@@ -69,9 +97,7 @@ function getStats(platform, name) {
   return player;
 } 
 
-function fetchPlayer(platform, name) {
-  Logger.log(name);
-  
+function fetchPlayer(platform, name) {  
   const endpoint = "https://api.tracker.gg/api/v2/rocket-league/standard/search?platform=" + platform + "&query=" + name + "&autocomplete=true"
  
   var data = null;
