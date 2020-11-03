@@ -7,8 +7,6 @@ function fetchMMR() {
     for (var i = 1; i < data.length; i++) {
         // @todo normalize these values so it can accept e.g "steam" "Steam" etc.
         var platform = data[i][0];
-        
-        var search = data[i][1];
       
         Logger.log("Ones rank: " + getOnesRank(platform, search)); 
         Logger.log("Twos rank: " + getTwosRank(platform, search)); 
@@ -31,6 +29,8 @@ function getThreesRank(platform, name) {
 function getRank(platform, name, rank) {
   var season = ROCKET_LEAGUE_SEASON;
 
+  name = encodeURI(name);
+  
   var player_stats = getStats(platform, name);
   
   for(var j = 0; j < player_stats.data.segments.length; j++) {
@@ -52,12 +52,14 @@ function getStats(platform, name) {
   var player = JSON.parse(cache.get(key));
   
   if(player == null) { 
+    Logger.log(name);
+    
     var player_data = fetchPlayer(platform, name);
   
     var player_id;
     
     player_id = player_data.data[0].platformUserIdentifier;
-  
+    
     player = fetchStats(platform, player_id);
   
     // cache API output for 24 hours.
@@ -68,6 +70,8 @@ function getStats(platform, name) {
 } 
 
 function fetchPlayer(platform, name) {
+  Logger.log(name);
+  
   const endpoint = "https://api.tracker.gg/api/v2/rocket-league/standard/search?platform=" + platform + "&query=" + name + "&autocomplete=true"
  
   var data = null;
